@@ -25,3 +25,9 @@ spring:
     user:
       name: boot
       password: spring
+
+# Default Admin User Configuration
+# These credentials are used to create the initial admin account on startup.
+admin:
+  email: ${ADMIN_EMAIL}
+  password: ${ADMIN_PASS}
