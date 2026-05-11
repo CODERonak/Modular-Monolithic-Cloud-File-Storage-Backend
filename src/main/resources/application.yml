@@ -31,3 +31,8 @@ spring:
 admin:
   email: ${ADMIN_EMAIL}
   password: ${ADMIN_PASS}
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
