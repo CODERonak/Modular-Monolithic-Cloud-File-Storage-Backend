@@ -36,3 +36,4 @@ build/
 
 .env
 plan.txt
+key.json

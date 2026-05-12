@@ -5,6 +5,7 @@ spring:
   application:
     name: Cloud-File-Storage
 
+
   # Using local db for development purposes
   datasource:
     url: jdbc:postgresql://localhost:5432/cfs
@@ -25,6 +26,15 @@ spring:
     user:
       name: boot
       password: spring
+
+  # Google cloud storage config
+  cloud:
+    gcp:
+      project-id: ${GCP_PROJECT_ID}
+      credentials:
+        location: classpath:gcp/key.json
+      storage:
+        bucket: ${GCP_STORAGE_BUCKET_NAME}
 
 # Default Admin User Configuration
 # These credentials are used to create the initial admin account on startup.
