@@ -21,5 +21,6 @@ public interface FileMapper {
     // Returns the original file name and a success message.
     @Mapping(target = "fileName", source = "originalFileName")
     @Mapping(target = "message", constant = "File uploaded successfully")
+    @Mapping(target = "id", source = "id")
     FileUploadResponse toUploadResponse(File file);
 }
