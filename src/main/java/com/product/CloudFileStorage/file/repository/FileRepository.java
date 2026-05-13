@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.product.CloudFileStorage.file.model.entity.File;
-import com.product.CloudFileStorage.user.model.entity.User;
+import com.product.CloudFileStorage.user.internal.model.entity.User;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, UUID> {

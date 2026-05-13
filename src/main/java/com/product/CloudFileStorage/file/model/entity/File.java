@@ -3,7 +3,7 @@ package com.product.CloudFileStorage.file.model.entity;
 import java.time.Instant;
 import java.util.UUID;
 
-import com.product.CloudFileStorage.user.model.entity.User;
+import com.product.CloudFileStorage.user.internal.model.entity.User;
 
 import jakarta.persistence.*;
 import lombok.*;
