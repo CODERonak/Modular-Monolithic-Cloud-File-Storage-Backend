@@ -1,9 +1,9 @@
-package com.product.CloudFileStorage.file.service.interfaces;
+package com.product.CloudFileStorage.file.internal.service.interfaces;
 
 import java.util.List;
 import java.util.UUID;
 
-import com.product.CloudFileStorage.file.dto.*;
+import com.product.CloudFileStorage.file.internal.dto.*;
 
 public interface FileService {
     FileUploadResponse uploadFile(FileUploadRequest fileUploadRequest);

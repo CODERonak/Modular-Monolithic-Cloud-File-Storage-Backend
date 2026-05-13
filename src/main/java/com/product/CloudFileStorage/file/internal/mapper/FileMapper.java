@@ -1,11 +1,11 @@
-package com.product.CloudFileStorage.file.mapper;
+package com.product.CloudFileStorage.file.internal.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.product.CloudFileStorage.file.dto.FileMetadataResponse;
-import com.product.CloudFileStorage.file.dto.FileUploadResponse;
-import com.product.CloudFileStorage.file.model.entity.File;
+import com.product.CloudFileStorage.file.internal.dto.FileMetadataResponse;
+import com.product.CloudFileStorage.file.internal.dto.FileUploadResponse;
+import com.product.CloudFileStorage.file.internal.model.entity.File;
 
 @Mapper(componentModel = "spring")
 public interface FileMapper {

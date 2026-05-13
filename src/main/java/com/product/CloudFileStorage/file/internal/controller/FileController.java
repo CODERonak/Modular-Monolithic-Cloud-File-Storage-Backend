@@ -1,4 +1,4 @@
-package com.product.CloudFileStorage.file.controller;
+package com.product.CloudFileStorage.file.internal.controller;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,8 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.product.CloudFileStorage.file.dto.*;
-import com.product.CloudFileStorage.file.service.interfaces.FileService;
+import com.product.CloudFileStorage.file.internal.dto.*;
+import com.product.CloudFileStorage.file.internal.service.interfaces.FileService;
 
 import io.swagger.v3.oas.annotations.Operation;
 

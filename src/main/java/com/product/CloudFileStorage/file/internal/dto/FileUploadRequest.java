@@ -1,4 +1,4 @@
-package com.product.CloudFileStorage.file.dto;
+package com.product.CloudFileStorage.file.internal.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.product.CloudFileStorage.file.model.entity;
+package com.product.CloudFileStorage.file.internal.model.entity;
 
 import java.time.Instant;
 import java.util.UUID;

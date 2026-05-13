@@ -7,16 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.product.CloudFileStorage.common.exceptions.custom.AccessDeniedException;
-import com.product.CloudFileStorage.common.exceptions.custom.UserNotFoundException;
-import com.product.CloudFileStorage.file.exception.FileDownloadException;
-import com.product.CloudFileStorage.file.exception.FileNotFoundException;
-import com.product.CloudFileStorage.file.exception.FileSizeLimitExceededException;
-import com.product.CloudFileStorage.file.exception.FileUploadException;
-import com.product.CloudFileStorage.file.exception.InvalidFileTypeException;
-import com.product.CloudFileStorage.file.exception.StorageException;
-import com.product.CloudFileStorage.user.internal.exception.InvalidCredentialsException;
-import com.product.CloudFileStorage.user.internal.exception.UserAlreadyExistsException;
+import com.product.CloudFileStorage.common.exceptions.custom.*;
+import com.product.CloudFileStorage.file.internal.exception.*;
+import com.product.CloudFileStorage.user.internal.exception.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 

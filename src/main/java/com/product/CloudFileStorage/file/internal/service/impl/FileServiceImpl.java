@@ -1,4 +1,4 @@
-package com.product.CloudFileStorage.file.service.impl;
+package com.product.CloudFileStorage.file.internal.service.impl;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.product.CloudFileStorage.common.exceptions.custom.UserNotFoundException;
-import com.product.CloudFileStorage.file.dto.*;
-import com.product.CloudFileStorage.file.exception.*;
-import com.product.CloudFileStorage.file.mapper.FileMapper;
-import com.product.CloudFileStorage.file.model.entity.File;
-import com.product.CloudFileStorage.file.repository.FileRepository;
-import com.product.CloudFileStorage.file.service.interfaces.FileService;
+import com.product.CloudFileStorage.file.internal.dto.*;
+import com.product.CloudFileStorage.file.internal.exception.*;
+import com.product.CloudFileStorage.file.internal.mapper.FileMapper;
+import com.product.CloudFileStorage.file.internal.model.entity.File;
+import com.product.CloudFileStorage.file.internal.repository.FileRepository;
+import com.product.CloudFileStorage.file.internal.service.interfaces.FileService;
 import com.product.CloudFileStorage.user.api.UserModuleAPI;
 import com.product.CloudFileStorage.user.internal.model.entity.User;
 import com.product.CloudFileStorage.user.internal.repository.UserRepository;
