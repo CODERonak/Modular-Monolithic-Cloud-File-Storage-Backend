@@ -36,4 +36,4 @@ build/
 
 .env
 plan.txt
-key.json
+gcp-key.json

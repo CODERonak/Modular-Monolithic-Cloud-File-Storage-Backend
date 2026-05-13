@@ -14,5 +14,5 @@ public interface FileService {
 
     FileMetadataResponse getFileMetadataById(UUID id);
 
-    List<FileMetadataResponse> getAllFiles();
+    List<FileMetadataResponse> getAllFiles(UUID id);
 }

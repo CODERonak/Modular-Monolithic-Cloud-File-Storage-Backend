@@ -5,7 +5,6 @@ spring:
   application:
     name: Cloud-File-Storage
 
-
   # Using local db for development purposes
   datasource:
     url: jdbc:postgresql://localhost:5432/cfs
@@ -32,7 +31,8 @@ spring:
     gcp:
       project-id: ${GCP_PROJECT_ID}
       credentials:
-        location: classpath:gcp/key.json
+        location: classpath:gcp/gcp-key.json
+
       storage:
         bucket: ${GCP_STORAGE_BUCKET_NAME}
 
