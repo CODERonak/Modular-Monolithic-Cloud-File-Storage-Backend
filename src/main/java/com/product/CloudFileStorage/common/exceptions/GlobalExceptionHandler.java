@@ -15,8 +15,8 @@ import com.product.CloudFileStorage.file.exception.FileSizeLimitExceededExceptio
 import com.product.CloudFileStorage.file.exception.FileUploadException;
 import com.product.CloudFileStorage.file.exception.InvalidFileTypeException;
 import com.product.CloudFileStorage.file.exception.StorageException;
-import com.product.CloudFileStorage.user.exception.InvalidCredentialsException;
-import com.product.CloudFileStorage.user.exception.UserAlreadyExistsException;
+import com.product.CloudFileStorage.user.internal.exception.InvalidCredentialsException;
+import com.product.CloudFileStorage.user.internal.exception.UserAlreadyExistsException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
