@@ -15,9 +15,9 @@ import com.product.CloudFileStorage.file.mapper.FileMapper;
 import com.product.CloudFileStorage.file.model.entity.File;
 import com.product.CloudFileStorage.file.repository.FileRepository;
 import com.product.CloudFileStorage.file.service.interfaces.FileService;
+import com.product.CloudFileStorage.user.api.UserModuleAPI;
 import com.product.CloudFileStorage.user.internal.model.entity.User;
 import com.product.CloudFileStorage.user.internal.repository.UserRepository;
-import com.product.CloudFileStorage.user.internal.service.interfaces.SecurityService;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -36,7 +36,7 @@ public class FileServiceImpl implements FileService {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
     private final FileMapper fileMapper;
-    private final SecurityService securityService;
+    private final UserModuleAPI userModuleAPI;
 
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
@@ -45,7 +45,7 @@ public class FileServiceImpl implements FileService {
     // Validates file size before uploading.
     @Override
     public FileUploadResponse uploadFile(FileUploadRequest fileUploadRequest) {
-        User owner = securityService.getCurrentUser();
+        User owner = userModuleAPI.getCurrentUser();
 
         // Validate file size
         if (fileUploadRequest.getFile().getSize() > MAX_FILE_SIZE) {
@@ -99,7 +99,7 @@ public class FileServiceImpl implements FileService {
                 .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + id));
 
         // Validate ownership
-        securityService.validateUser(file.getOwner().getId());
+        userModuleAPI.validateUser(file.getOwner().getId());
 
         try {
             BlobId blobId = BlobId.of(bucketName, file.getFileUrl());
@@ -130,7 +130,7 @@ public class FileServiceImpl implements FileService {
         File file = fileRepository.findById(id).get();
 
         // Validate ownership
-        securityService.validateUser(file.getOwner().getId());
+        userModuleAPI.validateUser(file.getOwner().getId());
 
         try {
             BlobId blobId = BlobId.of(bucketName, file.getFileUrl());
