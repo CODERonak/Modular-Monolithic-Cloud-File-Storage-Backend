@@ -22,6 +22,13 @@ import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Handles all file operations including GCS interactions and database
+ * persistence.
+ * USER operations are scoped to the authenticated user via JWT.
+ * ADMIN operations are metadata only — no file content or signed URLs exposed.
+ */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -37,8 +44,12 @@ public class FileServiceImpl implements FileService {
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
 
-    // Uploads a file to GCS and saves its metadata to the database.
-    // Validates file size before uploading.
+    /**
+     * Uploads a file to GCS and saves its metadata to the database.
+     * Validates file size and content type before uploading.
+     * File is stored under users/{ownerId}/{storageFileName} in GCS.
+     */
+
     @Override
     public FileUploadResponse uploadFile(FileUploadRequest fileUploadRequest) {
         UUID ownerId = userModuleAPI.getCurrentUser().getId();
@@ -89,34 +100,31 @@ public class FileServiceImpl implements FileService {
 
     }
 
+    /**
+     * Generates a signed GCS URL for downloading a specific file.
+     * Validates ownership before generating the URL.
+     * Signed URL is valid for 15 minutes.
+     */
+
     @Override
-    public FileResponse getFileById(UUID fileId) {
+    public FileResponse getDownloadLinkByFileId(UUID fileId) {
         File file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + fileId));
 
         // Validate ownership using ownerId directly
         userModuleAPI.validateUser(file.getOwnerId());
 
-        try {
-            BlobId blobId = BlobId.of(bucketName, file.getFileUrl());
+        String signedUrl = generateSignedUrl(file.getFileUrl());
 
-            // Generate signed URL valid for 15 minutes
-            String signedUrl = gcsStorage.signUrl(
-                    BlobInfo.newBuilder(blobId).build(),
-                    15,
-                    TimeUnit.MINUTES,
-                    Storage.SignUrlOption.withV4Signature())
-                    .toString();
-
-            log.info("Signed URL generated for file ID: {}", fileId);
-
-            return new FileResponse(signedUrl, file.getContentType(), file.getUploadedAt());
-
-        } catch (StorageException e) {
-            log.error("Failed to generate signed URL for file ID {}: {}", fileId, e.getMessage());
-            throw new FileDownloadException("Failed to generate download URL");
-        }
+        return new FileResponse(signedUrl, file.getContentType(), file.getUploadedAt());
     }
+
+    /**
+     * Deletes a file from GCS and removes its metadata from the database.
+     * Validates ownership before deletion.
+     * GCS deletion happens before database deletion — if GCS fails, DB record is
+     * preserved.
+     */
 
     @Override
     public void deleteFile(UUID fileId) {
@@ -142,7 +150,37 @@ public class FileServiceImpl implements FileService {
         log.info("File metadata deleted from database for ID: {}", fileId);
     }
 
-    // Admin only
+    /**
+     * Retrieves all files belonging to the authenticated user.
+     * Generates a signed GCS URL for each file valid for 15 minutes.
+     * Scoped strictly to the calling user via JWT — no cross-user access possible.
+     */
+
+    @Override
+    public List<UserFileResponse> getMyFiles() {
+        UUID ownerId = userModuleAPI.getCurrentUser().getId();
+
+        List<File> files = fileRepository.findByOwnerId(ownerId);
+
+        return files.stream()
+                .map(file -> {
+                    String signedUrl = generateSignedUrl(file.getFileUrl());
+                    return new UserFileResponse(
+                            file.getId(),
+                            file.getOriginalFileName(),
+                            file.getContentType(),
+                            file.getSize(),
+                            signedUrl);
+                })
+                .toList();
+    }
+
+    /**
+     * Retrieves metadata for all files belonging to a specific user.
+     * Admin only — accepts explicit userId parameter.
+     * Returns metadata only — no signed URLs generated.
+     */
+
     @Override
     public FileMetadataResponse getFileMetadataById(UUID fileId) {
         File file = fileRepository.findById(fileId)
@@ -151,13 +189,39 @@ public class FileServiceImpl implements FileService {
         return fileMapper.toMetadataResponse(file);
     }
 
-    // Admin only
+    /**
+     * Retrieves metadata for all files belonging to a specific user.
+     * Admin only — accepts explicit userId parameter.
+     * Returns metadata only — no signed URLs generated.
+     */
+
     @Override
     public List<FileMetadataResponse> getAllFilesMetadataByUserId(UUID userId) {
         List<File> files = fileRepository.findByOwnerId(userId);
         return files.stream()
                 .map(fileMapper::toMetadataResponse)
                 .toList();
+    }
+
+    /**
+     * Generates a signed GCS URL for a given storage path.
+     * URL is valid for 15 minutes after generation.
+     * Used internally by download and getMyFiles operations.
+     */
+
+    private String generateSignedUrl(String fileUrl) {
+        try {
+            BlobId blobId = BlobId.of(bucketName, fileUrl);
+            return gcsStorage.signUrl(
+                    BlobInfo.newBuilder(blobId).build(),
+                    15,
+                    TimeUnit.MINUTES,
+                    Storage.SignUrlOption.withV4Signature())
+                    .toString();
+        } catch (StorageException e) {
+            log.error("Failed to generate signed URL for file URL {}: {}", fileUrl, e.getMessage());
+            throw new FileDownloadException("Failed to generate download URL");
+        }
     }
 
 }
