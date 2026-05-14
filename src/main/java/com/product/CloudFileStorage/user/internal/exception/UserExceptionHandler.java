@@ -1,10 +1,11 @@
 package com.product.CloudFileStorage.user.internal.exception;
 
-import com.product.CloudFileStorage.common.exceptions.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.product.CloudFileStorage.common.ErrorResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;

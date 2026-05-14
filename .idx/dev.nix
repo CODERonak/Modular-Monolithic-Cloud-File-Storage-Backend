@@ -6,6 +6,7 @@
     pkgs.maven
     pkgs.google-cloud-sdk
     pkgs.docker
+    pkgs.postgresql_18
   ];
 
   services.postgres = {

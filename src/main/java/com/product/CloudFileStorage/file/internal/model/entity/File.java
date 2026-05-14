@@ -3,8 +3,6 @@ package com.product.CloudFileStorage.file.internal.model.entity;
 import java.time.Instant;
 import java.util.UUID;
 
-import com.product.CloudFileStorage.user.internal.model.entity.User;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,9 +17,8 @@ public class File {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    @Column(name = "owner_id", nullable = false)
+    private UUID ownerId;
 
     private UUID folderId;
 

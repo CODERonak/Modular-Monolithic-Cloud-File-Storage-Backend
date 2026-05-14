@@ -1,4 +1,4 @@
-package com.product.CloudFileStorage.common.exceptions;
+package com.product.CloudFileStorage.common;
 
 import java.time.Instant;
 

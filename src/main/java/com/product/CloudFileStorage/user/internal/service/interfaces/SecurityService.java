@@ -5,6 +5,6 @@ import java.util.UUID;
 
 public interface SecurityService {
     User getCurrentUser();
- 
+    
     void validateUser(UUID userId);
- }
+}

@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.product.CloudFileStorage.common.exceptions.custom.UserNotFoundException;
 import com.product.CloudFileStorage.file.internal.dto.*;
 import com.product.CloudFileStorage.file.internal.exception.*;
 import com.product.CloudFileStorage.file.internal.mapper.FileMapper;
@@ -16,8 +15,6 @@ import com.product.CloudFileStorage.file.internal.model.entity.File;
 import com.product.CloudFileStorage.file.internal.repository.FileRepository;
 import com.product.CloudFileStorage.file.internal.service.interfaces.FileService;
 import com.product.CloudFileStorage.user.api.UserModuleAPI;
-import com.product.CloudFileStorage.user.internal.model.entity.User;
-import com.product.CloudFileStorage.user.internal.repository.UserRepository;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -33,7 +30,6 @@ public class FileServiceImpl implements FileService {
     private static final long MAX_FILE_SIZE = 40 * 1024 * 1024; // 40MB in bytes
 
     private final Storage gcsStorage;
-    private final UserRepository userRepository;
     private final FileRepository fileRepository;
     private final FileMapper fileMapper;
     private final UserModuleAPI userModuleAPI;
@@ -45,7 +41,7 @@ public class FileServiceImpl implements FileService {
     // Validates file size before uploading.
     @Override
     public FileUploadResponse uploadFile(FileUploadRequest fileUploadRequest) {
-        User owner = userModuleAPI.getCurrentUser();
+        UUID ownerId = userModuleAPI.getCurrentUser().getId();
 
         // Validate file size
         if (fileUploadRequest.getFile().getSize() > MAX_FILE_SIZE) {
@@ -60,7 +56,7 @@ public class FileServiceImpl implements FileService {
 
         String originalFileName = fileUploadRequest.getFile().getOriginalFilename();
         String storageFileName = UUID.randomUUID() + "_" + originalFileName;
-        String storagePath = "users/" + owner.getId() + "/" + storageFileName;
+        String storagePath = "users/" + ownerId + "/" + storageFileName;
 
         try {
             BlobId blobId = BlobId.of(bucketName, storagePath);
@@ -79,7 +75,7 @@ public class FileServiceImpl implements FileService {
         }
 
         File file = new File();
-        file.setOwner(owner);
+        file.setOwnerId(ownerId);
         file.setOriginalFileName(originalFileName);
         file.setStorageFileName(storageFileName);
         file.setContentType(contentType);
@@ -98,8 +94,8 @@ public class FileServiceImpl implements FileService {
         File file = fileRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + id));
 
-        // Validate ownership
-        userModuleAPI.validateUser(file.getOwner().getId());
+        // Validate ownership using ownerId directly
+        userModuleAPI.validateUser(file.getOwnerId());
 
         try {
             BlobId blobId = BlobId.of(bucketName, file.getFileUrl());
@@ -124,13 +120,11 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void deleteFile(UUID id) {
-        fileRepository.findById(id)
+        File file = fileRepository.findById(id)
                 .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + id));
 
-        File file = fileRepository.findById(id).get();
-
-        // Validate ownership
-        userModuleAPI.validateUser(file.getOwner().getId());
+        // Validate ownership using ownerId directly
+        userModuleAPI.validateUser(file.getOwnerId());
 
         try {
             BlobId blobId = BlobId.of(bucketName, file.getFileUrl());
@@ -140,8 +134,7 @@ public class FileServiceImpl implements FileService {
 
         } catch (StorageException e) {
             log.error("Failed to delete file from GCS: {}", e.getMessage());
-            throw new StorageException(
-                    "Failed to delete file from storage");
+            throw new StorageException("Failed to delete file from storage");
         }
 
         // Delete metadata from database after GCS deletion
@@ -159,11 +152,10 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<FileMetadataResponse> getAllFiles(UUID id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
-
-        List<File> files = fileRepository.findByOwner(user);
-        return files.stream().map(fileMapper::toMetadataResponse).toList();
+        List<File> files = fileRepository.findByOwnerId(id);
+        return files.stream()
+                .map(fileMapper::toMetadataResponse)
+                .toList();
     }
 
 }

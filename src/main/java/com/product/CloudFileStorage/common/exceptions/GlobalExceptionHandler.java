@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.product.CloudFileStorage.common.ErrorResponse;
 import com.product.CloudFileStorage.common.exceptions.custom.*;
 
 import jakarta.servlet.http.HttpServletRequest;
