@@ -5,13 +5,6 @@ spring:
   application:
     name: Cloud-File-Storage
 
-  # Using local db for development purposes
-  datasource:
-    url: jdbc:postgresql://localhost:5432/cfs
-    username: "myuser"
-    password: "secret"
-    driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -21,18 +14,26 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
   security:
     user:
       name: boot
       password: spring
 
-  # Google cloud storage config
+  # Google cloud storage and cloud SQL config
   cloud:
     gcp:
+      sql:
+        enabled: true
+        database-name: ${DB_NAME}
+        instance-connection-name: ${INSTANCE_CONNECTION_NAME}
       project-id: ${GCP_PROJECT_ID}
       credentials:
         location: classpath:gcp/gcp-key.json
-
       storage:
         bucket: ${GCP_STORAGE_BUCKET_NAME}
 
