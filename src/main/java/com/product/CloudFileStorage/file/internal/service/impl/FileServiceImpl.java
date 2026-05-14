@@ -90,9 +90,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public FileResponse getFileById(UUID id) {
-        File file = fileRepository.findById(id)
-                .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + id));
+    public FileResponse getFileById(UUID fileId) {
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + fileId));
 
         // Validate ownership using ownerId directly
         userModuleAPI.validateUser(file.getOwnerId());
@@ -108,20 +108,20 @@ public class FileServiceImpl implements FileService {
                     Storage.SignUrlOption.withV4Signature())
                     .toString();
 
-            log.info("Signed URL generated for file ID: {}", id);
+            log.info("Signed URL generated for file ID: {}", fileId);
 
             return new FileResponse(signedUrl, file.getContentType(), file.getUploadedAt());
 
         } catch (StorageException e) {
-            log.error("Failed to generate signed URL for file ID {}: {}", id, e.getMessage());
+            log.error("Failed to generate signed URL for file ID {}: {}", fileId, e.getMessage());
             throw new FileDownloadException("Failed to generate download URL");
         }
     }
 
     @Override
-    public void deleteFile(UUID id) {
-        File file = fileRepository.findById(id)
-                .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + id));
+    public void deleteFile(UUID fileId) {
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + fileId));
 
         // Validate ownership using ownerId directly
         userModuleAPI.validateUser(file.getOwnerId());
@@ -138,21 +138,23 @@ public class FileServiceImpl implements FileService {
         }
 
         // Delete metadata from database after GCS deletion
-        fileRepository.deleteById(id);
-        log.info("File metadata deleted from database for ID: {}", id);
+        fileRepository.deleteById(fileId);
+        log.info("File metadata deleted from database for ID: {}", fileId);
     }
 
+    // Admin only
     @Override
-    public FileMetadataResponse getFileMetadataById(UUID id) {
-        File file = fileRepository.findById(id)
-                .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + id));
+    public FileMetadataResponse getFileMetadataById(UUID fileId) {
+        File file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new FileNotFoundException("File not found with ID: " + fileId));
 
         return fileMapper.toMetadataResponse(file);
     }
 
+    // Admin only
     @Override
-    public List<FileMetadataResponse> getAllFiles(UUID id) {
-        List<File> files = fileRepository.findByOwnerId(id);
+    public List<FileMetadataResponse> getAllFilesMetadataByUserId(UUID userId) {
+        List<File> files = fileRepository.findByOwnerId(userId);
         return files.stream()
                 .map(fileMapper::toMetadataResponse)
                 .toList();

@@ -34,32 +34,32 @@ public class FileController {
     }
 
     @Operation(summary = "Download a file from GCP storage bucket")
-    @GetMapping("/download/{id}")
-    public ResponseEntity<FileResponse> downloadFile(@PathVariable UUID id) {
-        var response = fileService.getFileById(id);
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<FileResponse> downloadFile(@PathVariable UUID fileId) {
+        var response = fileService.getFileById(fileId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Delete a file from GCP storage bucket")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteFile(@PathVariable UUID id) {
-        fileService.deleteFile(id);
+    @DeleteMapping("/delete/{fileId}")
+    public ResponseEntity<Void> deleteFile(@PathVariable UUID fileId) {
+        fileService.deleteFile(fileId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Operation(summary = "Get a file metadata by id from GCP storage bucketand is a admin only endpoint")
-    @GetMapping("/metadata/{id}")
-    public ResponseEntity<FileMetadataResponse> getFileMetadata(@PathVariable UUID id) {
-        var response = fileService.getFileMetadataById(id);
+    @GetMapping("/metadata/{userId}")
+    public ResponseEntity<FileMetadataResponse> getFileMetadata(@PathVariable UUID userId) {
+        var response = fileService.getFileMetadataById(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Operation(summary = "Get all files metadata by user id from GCP storage bucket and is a admin only endpoint")
-    @GetMapping("/metadata/all/{id}")
-    public ResponseEntity<List<FileMetadataResponse>> getAllFiles(@PathVariable UUID id) {
-        var response = fileService.getAllFiles(id);
+    @GetMapping("/metadata/all/{userId}")
+    public ResponseEntity<List<FileMetadataResponse>> getAllFiles(@PathVariable UUID userId) {
+        var response = fileService.getAllFilesMetadataByUserId(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
