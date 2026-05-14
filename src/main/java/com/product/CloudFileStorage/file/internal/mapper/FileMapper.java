@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 
 import com.product.CloudFileStorage.file.internal.dto.FileMetadataResponse;
 import com.product.CloudFileStorage.file.internal.dto.FileUploadResponse;
+import com.product.CloudFileStorage.file.internal.dto.UserFileResponse;
 import com.product.CloudFileStorage.file.internal.model.entity.File;
 
 @Mapper(componentModel = "spring")
@@ -23,4 +24,10 @@ public interface FileMapper {
     @Mapping(target = "message", constant = "File uploaded successfully")
     @Mapping(target = "id", source = "id")
     FileUploadResponse toUploadResponse(File file);
+
+    // Converts a File entity to a UserFileResponse DTO.
+    // Maps entity fields to response for user file info.
+    @Mapping(target = "fileName", source = "originalFileName")
+    @Mapping(target = "fileUrl", source = "fileUrl")
+    UserFileResponse toUserFileResponse(File file);
 }
