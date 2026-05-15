@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @Tag(name = "Authentication", description = "Endpoints for user registration and login. " +
-        "Returns a JWT token on successful authentication.")
+        "Returns a JWT token on successful login.")
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
@@ -26,9 +26,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Register a new user", description = "Registers a new user account with email, password and full name. "
-            +
-            "Returns a JWT token on successful registration.")
+    @Operation(summary = "Register a new user", description = "Registers a new user account with email, password and full name)")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "User registered successfully"),
             @ApiResponse(responseCode = "409", description = "User already exists with this email"),
