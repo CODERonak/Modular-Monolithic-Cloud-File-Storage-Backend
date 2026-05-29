@@ -3,9 +3,9 @@
 A real-world cloud-based file storage backend for managing authentication, file uploads, and secure access control. This project is designed as a modular monolith using production-ready Spring Boot practices, intended for deployment on Google Cloud Platform.
 
 ## Links
-* **Postman:** [Link to Postman Collection] soon will be updated
-* **Swagger:** [[Link to Swagger UI](https://cfs-service-934927433282.us-central1.run.app/swagger-ui/index.html#/)]
-* **Deployed URL:** [[Link to Deployed Backend](https://cfs-service-934927433282.us-central1.run.app)]
+* **Postman:** [[Postman Collection](https://web.postman.co/94e3471c-49d0-449b-ad50-ee8bfdd8c9ff)]
+* **Swagger:** [[Swagger UI](https://cfs-service-934927433282.us-central1.run.app/swagger-ui/index.html#/)]
+* **Deployed URL:** [[Deployed Backend URL](https://cfs-service-934927433282.us-central1.run.app)]
 
 ## Features
 
